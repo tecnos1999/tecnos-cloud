@@ -30,6 +30,10 @@ public class Document {
     @Column(name = "file_url", nullable = false, unique = true)
     private String fileUrl;
 
+    @Lob
+    @Column(name = "file_data", nullable = false , columnDefinition = "LONGBLOB")
+    private byte[] fileData;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

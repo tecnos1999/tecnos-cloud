@@ -26,14 +26,7 @@ public class DocumentCommandServiceImpl implements DocumentCommandService {
     @Override
     public String uploadDocument(MultipartFile file) {
         try {
-            Path uploadDir = Paths.get("path/to/uploaded/files");
-
-            if (!Files.exists(uploadDir)) {
-                Files.createDirectories(uploadDir);
-            }
-
-            Path filePath = uploadDir.resolve(Objects.requireNonNull(file.getOriginalFilename())).normalize();
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            byte[] fileData = file.getBytes();
 
             String fileUrl = "http://localhost:8082/server/api/v1/document/files/" + file.getOriginalFilename();
 
@@ -41,6 +34,7 @@ public class DocumentCommandServiceImpl implements DocumentCommandService {
                     .name(file.getOriginalFilename())
                     .fileType(file.getContentType())
                     .fileUrl(fileUrl)
+                    .fileData(fileData)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();

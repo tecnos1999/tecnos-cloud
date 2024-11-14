@@ -1,9 +1,12 @@
 package com.example.tecnoscloud.documents.web;
 
+import com.example.tecnoscloud.documents.model.Document;
 import com.example.tecnoscloud.documents.service.DocumentCommandService;
+import com.example.tecnoscloud.documents.service.DocumentQueryService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 
 @RestController
@@ -21,6 +25,7 @@ import java.nio.file.Paths;
 @AllArgsConstructor
 public class DocumentController {
     private final DocumentCommandService documentCommandService;
+    private final DocumentQueryService documentQueryService;
 
 
     @PostMapping("/upload")
@@ -36,16 +41,17 @@ public class DocumentController {
 
 
     @GetMapping("/files/{filename}")
-    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+    public ResponseEntity<byte[]> getFile(@PathVariable String filename) {
         try {
-            Path filePath = Paths.get("path/to/uploaded/files").resolve(filename).normalize();
+            Optional<Document> documentOptional = documentQueryService.getDocumentByName(filename);
 
-            Resource resource = new UrlResource(filePath.toUri());
+            if (documentOptional.isPresent()) {
+                Document document = documentOptional.get();
 
-            if (resource.exists() && resource.isReadable()) {
                 return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(Files.probeContentType(filePath)))
-                        .body(resource);
+                        .contentType(MediaType.parseMediaType(document.getFileType()))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.getName() + "\"")
+                        .body(document.getFileData());
             } else {
                 return ResponseEntity.notFound().build();
             }
