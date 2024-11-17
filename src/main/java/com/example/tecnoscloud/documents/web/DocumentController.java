@@ -1,5 +1,6 @@
 package com.example.tecnoscloud.documents.web;
 
+import com.example.tecnoscloud.documents.dto.DocumentResponseDTO;
 import com.example.tecnoscloud.documents.model.Document;
 import com.example.tecnoscloud.documents.service.DocumentCommandService;
 import com.example.tecnoscloud.documents.service.DocumentQueryService;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -29,16 +31,10 @@ public class DocumentController {
 
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadDocument(@RequestParam("file") MultipartFile file) {
-        try {
-            String fileUrl = documentCommandService.uploadDocument(file);
-            return new ResponseEntity<>(fileUrl, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Eroare la încărcarea documentului.", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<List<DocumentResponseDTO>> uploadMultipleFiles(@RequestParam("files") List<MultipartFile> files) {
+        List<DocumentResponseDTO> fileResponses = documentCommandService.uploadDocuments(files);
+        return ResponseEntity.ok(fileResponses);
     }
-
-
 
     @GetMapping("/files/{filename}")
     public ResponseEntity<byte[]> getFile(@PathVariable String filename) {
