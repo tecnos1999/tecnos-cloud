@@ -13,3 +13,7 @@ management:
 
 logs:
   destination: logstash:3100
+
+file:
+  baseUrl: http://tecnos-cloud:8082
+

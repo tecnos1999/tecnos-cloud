@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface DocumentRepo extends JpaRepository<Document, Long> {
 
     Optional<Document> findByName(String name);
+
+    Optional<Document> findByFileUrl(String fileUrl);
 }

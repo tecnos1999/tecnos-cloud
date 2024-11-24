@@ -4,4 +4,6 @@ import java.util.Optional;
 
 public interface DocumentQueryService {
     Optional<Document> getDocumentByName(String name);
+    Optional<Document> findByFileUrl(String fileUrl);
+
 }

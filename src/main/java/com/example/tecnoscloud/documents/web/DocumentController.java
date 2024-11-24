@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/server/api/v1/document/")
+@RequestMapping("/cloud/api/v1/document/")
 @AllArgsConstructor
 public class DocumentController {
     private final DocumentCommandService documentCommandService;
@@ -36,6 +36,13 @@ public class DocumentController {
         return ResponseEntity.ok(fileResponses);
     }
 
+    @PostMapping("/uploadSingle")
+    public ResponseEntity<DocumentResponseDTO> uploadSingleFile(@RequestParam("file") MultipartFile file) {
+        Optional<DocumentResponseDTO> fileResponse = documentCommandService.uploadDocument(file);
+        return fileResponse.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null));
+    }
+
     @GetMapping("/files/{filename}")
     public ResponseEntity<byte[]> getFile(@PathVariable String filename) {
         try {
@@ -46,7 +53,7 @@ public class DocumentController {
 
                 return ResponseEntity.ok()
                         .contentType(MediaType.parseMediaType(document.getFileType()))
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.getName() + "\"")
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + document.getName() + "\"")
                         .body(document.getFileData());
             } else {
                 return ResponseEntity.notFound().build();
@@ -55,6 +62,13 @@ public class DocumentController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @DeleteMapping("/files")
+    public ResponseEntity<String> deleteFile(@RequestParam("fileUrl") String fileUrl) {
+        documentCommandService.deleteDocument(fileUrl);
+        return ResponseEntity.ok("File deleted successfully");
+    }
+
 
 
 

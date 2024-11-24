@@ -59,3 +59,7 @@ management:
 
 logs:
   destination: localhost:3100
+
+file:
+  baseUrl: http://localhost:8082
+
