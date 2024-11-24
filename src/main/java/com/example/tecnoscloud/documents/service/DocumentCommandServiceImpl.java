@@ -112,4 +112,21 @@ public class DocumentCommandServiceImpl implements DocumentCommandService {
         documentRepository.delete(documentOpt.get());
     }
 
+    @Override
+    public void deleteDocuments(List<String> fileUrls) {
+        List<String> notFoundFiles = new ArrayList<>();
+
+        for (String fileUrl : fileUrls) {
+            try {
+                deleteDocument(fileUrl);
+            } catch (NotFoundException e) {
+                notFoundFiles.add(fileUrl);
+            }
+        }
+
+        if (!notFoundFiles.isEmpty()) {
+            throw new NotFoundException("Some documents were not found: " + String.join(", ", notFoundFiles));
+        }
+    }
+
 }

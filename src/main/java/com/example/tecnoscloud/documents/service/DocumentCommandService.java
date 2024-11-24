@@ -12,5 +12,7 @@ public interface DocumentCommandService {
     Optional<DocumentResponseDTO> uploadDocument(MultipartFile file);
 
     void deleteDocument(String fileUrl);
+
+    void deleteDocuments(List<String> fileUrls);
 }
 

@@ -69,6 +69,14 @@ public class DocumentController {
         return ResponseEntity.ok("File deleted successfully");
     }
 
+    @DeleteMapping("/files/batch")
+    public ResponseEntity<String> deleteFiles(@RequestBody List<String> fileUrls) {
+        documentCommandService.deleteDocuments(fileUrls);
+        return ResponseEntity.ok("Files deleted successfully");
+    }
+
+
+
 
 
 
