@@ -15,5 +15,5 @@ logs:
   destination: logstash:3100
 
 file:
-  baseUrl: http://89.33.44.227
+  baseUrl: https://89.33.44.227
 

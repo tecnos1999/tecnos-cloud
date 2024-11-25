@@ -87,7 +87,7 @@ public class DocumentCommandServiceImpl implements DocumentCommandService {
 
     private String generateFileUrl(String encodedFileName) {
         return UriComponentsBuilder.fromHttpUrl(fileBaseUrl)
-                .path("/cloud/api/v1/document/files/")
+                .path("/cloud/document/files/")
                 .pathSegment(encodedFileName)
                 .toUriString();
     }
