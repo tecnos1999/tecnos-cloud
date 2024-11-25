@@ -15,5 +15,5 @@ logs:
   destination: logstash:3100
 
 file:
-  baseUrl: http://tecnos-cloud:8082
+  baseUrl: http://89.33.44.227
 
