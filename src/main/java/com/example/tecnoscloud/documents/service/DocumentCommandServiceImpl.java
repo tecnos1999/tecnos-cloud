@@ -51,7 +51,9 @@ public class DocumentCommandServiceImpl implements DocumentCommandService {
             String originalFileName = file.getOriginalFilename();
             validateFileName(originalFileName);
 
-            String encodedFileName = encodeFileName(originalFileName);
+            String uniqueFileName = generateUniqueFileName(originalFileName);
+
+            String encodedFileName = encodeFileName(uniqueFileName);
 
             if (documentRepository.findByFileUrl(generateFileUrl(encodedFileName)).isPresent()) {
                 throw new AlreadyExistsException("A document with the same URL already exists.");
@@ -69,6 +71,7 @@ public class DocumentCommandServiceImpl implements DocumentCommandService {
             throw new AppException("Error uploading file: " + file.getOriginalFilename());
         }
     }
+
 
 
     private void validateFileName(String fileName) {
@@ -128,5 +131,19 @@ public class DocumentCommandServiceImpl implements DocumentCommandService {
             throw new NotFoundException("Some documents were not found: " + String.join(", ", notFoundFiles));
         }
     }
+
+    private String generateUniqueFileName(String originalFileName) {
+        String uniqueId = String.valueOf(System.currentTimeMillis());
+        String extension = "";
+
+        int dotIndex = originalFileName.lastIndexOf('.');
+        if (dotIndex != -1) {
+            extension = originalFileName.substring(dotIndex);
+        }
+
+        String baseName = originalFileName.replace(extension, "").replaceAll("\\s+", "_");
+        return baseName + "_" + uniqueId + extension;
+    }
+
 
 }

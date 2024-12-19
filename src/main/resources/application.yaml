@@ -61,5 +61,5 @@ logs:
   destination: localhost:3100
 
 file:
-  baseUrl: http://localhost:8082
+  baseUrl: http://localhost:8080
 
